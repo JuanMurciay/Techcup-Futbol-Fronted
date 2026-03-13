@@ -27,3 +27,8 @@ Muestra la clasificación actualizada de todos los equipos con sus estadísticas
 
 ### Listado de Equipos
 Aquí se ven todos los equipos inscritos en el torneo con su nombre, escudo y capitán. Desde esta pantalla el capitán también puede crear un nuevo equipo usando el botón de arriba.
+
+<img width="652" height="466" alt="image" src="https://github.com/user-attachments/assets/677c293f-30a8-4025-9c97-7ccd92a39127" />
+
+### Próximos Partidos
+Lista los enfrentamientos programados con el horario y la cancha donde se juegan. Tiene un calendario al lado para navegar por fechas y ver qué partidos hay en cada día.
