@@ -4,10 +4,12 @@
 https://www.figma.com/design/HedKnnmSbBUYQYmwasHEjl/TechCup?node-id=0-1&m=dev&t=jJU8jxNaMPQR0e2y-1
 
 <img width="824" height="581" alt="image" src="https://github.com/user-attachments/assets/4a4fe8eb-f856-4ac7-8757-2a94c7b59b08" />
-#### Pantalla de inicio de sesión 
-####   Esta pantalla permite a los usuarios ingresar a la plataforma TechCup, un sistema diseñado para la gestión de torneos universitarios de           fútbol. En ella se solicita el correo electrónico y la contraseña del usuario para acceder a su cuenta.
+
+####  Pantalla de inicio de sesión 
+
+#### Esta pantalla permite a los usuarios ingresar a la plataforma TechCup, un sistema diseñado para la gestión de torneos universitarios de fútbol. En ella se solicita el correo electrónico y la contraseña del usuario para acceder a su cuenta.
   
-####  También incluye opciones adicionales como recordar la sesión, recuperar la contraseña en caso de olvido y la posibilidad de iniciar sesión        con una cuenta de Google para facilitar el acceso.
+####  También incluye opciones adicionales como recordar la sesión, recuperar la contraseña en caso de olvido y la posibilidad de iniciar sesión con una cuenta de Google para facilitar el acceso.
   
 ####  En caso de que el usuario no esté registrado, se ofrece un enlace para crear un perfil deportivo, lo que permite registrarse en la   plataforma y comenzar a participar en los torneos.
 
