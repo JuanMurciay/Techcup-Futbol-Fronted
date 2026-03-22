@@ -98,6 +98,20 @@ También incluye accesos para crear nuevos torneos y administrar partidos, junto
 
 ![12.png](Images/12.png)
 
+### Justificacion manual de identidad 
+### Justificacion color principal verde
 
+Identidad académica
+
+El color verde está asociado al programa de Ingeniería de Sistemas, del cual forma parte el desarrollo del proyecto académico.
+La utilización de este color permite establecer una conexión visual con la identidad del programa.
+Relación con el deporte
+El verde también es un color tradicionalmente asociado con el fútbol, ya que representa el campo de juego.
+Por esta razón resulta adecuado para una plataforma dedicada a la organización de torneos deportivos.
+
+### Justificacion tipografia 
+Poppins fue seleccionada como tipografía principal de la plataforma TECHCUP Fútbol debido a sus características de diseño moderno y alta legibilidad en interfaces digitales.
+Sus formas geométricas y equilibradas permiten mantener una apariencia clara y profesional dentro de la interfaz del sistema.
+Además, es una tipografía ampliamente utilizada en aplicaciones web y kits de diseño
 
 
