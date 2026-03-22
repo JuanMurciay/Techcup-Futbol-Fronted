@@ -98,7 +98,11 @@ También incluye accesos para crear nuevos torneos y administrar partidos, junto
 
 ![12.png](Images/12.png)
 
+---
+
 ### Justificacion manual de identidad 
+
+---
 ### Justificacion color principal verde
 
 Identidad académica
