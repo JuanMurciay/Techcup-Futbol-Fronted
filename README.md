@@ -1,14 +1,25 @@
-# Techcup-Futbol-Fronted
+# Techcup Futbol Frontend
 
-### link Figma
+![Logo.png](Images/Logo.png)
+
+### Manual de identidad
+
+[Manual de Identidad _ JAVABURGUER.pdf](Images/Manual%20de%20Identidad%20_%20JAVABURGUER.pdf)
+
+### link Mockup en Figma
 https://www.figma.com/design/HedKnnmSbBUYQYmwasHEjl/TechCup?node-id=0-1&m=dev&t=jJU8jxNaMPQR0e2y-1
-
 
 ## Pantalla Principal:
 Presenta la página de inicio de la plataforma, con un menú superior para navegar entre equipos, partidos y competiciones.
 Incluye secciones de noticias, redes sociales y finalistas, además de botones para iniciar sesión o unirse.
 
 ![1.png](Images/1.png)
+
+---
+
+## Pantalla de Noticias:
+
+![pantallanoticias.png](Images/pantallanoticias.png)
 
 ---
 
@@ -33,6 +44,13 @@ Permite a los usuarios con rol de capitán crear su equipo ingresando el nombre,
 subiendo el escudo. Finaliza con el botón “Continuar” para avanzar en la configuración.
 
 ![4.png](Images/4.png)
+
+---
+
+## Pantalla de inicio de Admin de la aplicacion
+
+![pantalla admin.png](Images/pantalla%20admin.png)
+
 
 ---
 
@@ -97,25 +115,3 @@ Muestra un panel general con información clave del torneo: próximos partidos, 
 También incluye accesos para crear nuevos torneos y administrar partidos, junto con un menú lateral y barra superior para navegación.
 
 ![12.png](Images/12.png)
-
----
-
-### Justificacion manual de identidad 
-
----
-### Justificacion color principal verde
-
-Identidad académica
-
-El color verde está asociado al programa de Ingeniería de Sistemas, del cual forma parte el desarrollo del proyecto académico.
-La utilización de este color permite establecer una conexión visual con la identidad del programa.
-Relación con el deporte
-El verde también es un color tradicionalmente asociado con el fútbol, ya que representa el campo de juego.
-Por esta razón resulta adecuado para una plataforma dedicada a la organización de torneos deportivos.
-
-### Justificacion tipografia 
-Poppins fue seleccionada como tipografía principal de la plataforma TECHCUP Fútbol debido a sus características de diseño moderno y alta legibilidad en interfaces digitales.
-Sus formas geométricas y equilibradas permiten mantener una apariencia clara y profesional dentro de la interfaz del sistema.
-Además, es una tipografía ampliamente utilizada en aplicaciones web y kits de diseño
-
-
