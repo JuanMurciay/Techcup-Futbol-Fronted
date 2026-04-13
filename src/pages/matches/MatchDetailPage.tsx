@@ -12,7 +12,8 @@ export default function MatchDetailPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const matchId = parseInt(id ?? '0');
-  const isOrganizer = user?.role === 'ORGANIZADOR' || user?.role === 'ADMIN';
+  const isOrganizer =
+    user?.role === 'ORGANIZER' || user?.role === 'ORGANIZADOR' || user?.role === 'ADMIN';
 
   const { data: match, loading, error } = useFetch<Match>(() => MatchService.getById(matchId), [matchId]);
   const { data: events, refetch: refetchEvents } = useFetch<MatchEvent[]>(() => MatchService.getEvents(matchId), [matchId]);

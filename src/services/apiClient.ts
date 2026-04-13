@@ -1,13 +1,19 @@
 import axios from 'axios';
 import type { InternalAxiosRequestConfig } from 'axios';
 
+function resolveBaseURL(): string {
+  const env = import.meta.env.VITE_API_URL;
+  if (typeof env === 'string' && env.trim()) return env.replace(/\/$/, '');
+  if (import.meta.env.DEV) return '';
+  return 'https://localhost:8443';
+}
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:8443',
+  baseURL: resolveBaseURL(),
   timeout: 10000,
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Inyectar token en cada request
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const raw = localStorage.getItem('tc_user');
   if (raw) {
@@ -16,20 +22,26 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
       if (user.token) {
         config.headers.set('Authorization', `Bearer ${user.token}`);
       }
-    } catch {
-      // token malformado, ignorar
-    }
+    } catch {}
   }
   return config;
 });
 
-// Manejo centralizado de errores
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (!error.response && error.message === 'Network Error') {
+      return Promise.reject(
+        new Error(
+          'Sin conexión con el servidor. En desarrollo usa `npm run dev` (proxy a HTTPS) o define VITE_API_URL. Comprueba que el back esté en marcha.',
+        ),
+      );
+    }
+
+    const data = error.response?.data as Record<string, unknown> | undefined;
     const message =
-      error.response?.data?.message ??
-      error.response?.data?.error ??
+      (typeof data?.message === 'string' ? data.message : undefined) ??
+      (typeof data?.error === 'string' ? data.error : undefined) ??
       error.message ??
       'Error desconocido';
 

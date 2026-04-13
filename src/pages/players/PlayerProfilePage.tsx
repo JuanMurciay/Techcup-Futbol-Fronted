@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { AppLogo } from '../../components/AppLogo';
 import { useFetch } from '../../hooks/useFetch';
 import PlayerService from '../../services/player.service';
 import StatsService from '../../services/stats.service';
@@ -37,8 +38,7 @@ export default function PlayerProfilePage() {
       <header style={s.header}>
         <button style={s.backBtn} onClick={() => navigate(-1)}>←</button>
         <div style={s.logoCorner}>
-          <div style={s.logoBox}><span style={{ fontSize: 20 }}>⚽</span></div>
-          <span style={s.logoText}>TECHCUP</span>
+          <AppLogo height={56} />
         </div>
       </header>
 
@@ -128,8 +128,6 @@ const s: Record<string, CSSProperties> = {
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', backgroundColor: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
   backBtn: { background: 'none', border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', color: '#22c55e', fontFamily: 'inherit' },
   logoCorner: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 },
-  logoBox: { width: 44, height: 44, border: '2px solid #3a6b35', borderRadius: 8, backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  logoText: { fontSize: 8, fontWeight: 800, color: '#3a6b35', letterSpacing: 2 },
   main: { maxWidth: 800, margin: '0 auto', padding: '28px 32px', display: 'flex', flexDirection: 'column', gap: 20 },
   heroCard: { backgroundColor: '#fff', borderRadius: 16, padding: '28px', display: 'flex', alignItems: 'center', gap: 24, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
   avatarBig: { width: 100, height: 100, borderRadius: '50%', backgroundColor: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' },

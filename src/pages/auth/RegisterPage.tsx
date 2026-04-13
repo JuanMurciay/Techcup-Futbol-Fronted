@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import PlayerService from '../../services/player.service';
+import { AppLogo } from '../../components/AppLogo';
 
 type UserType = 'JUGADOR' | 'ARBITRO' | 'CAPITAN';
 type Position = 'Portero' | 'Defensa' | 'Volante' | 'Delantero';
@@ -32,6 +33,7 @@ export default function RegisterPage() {
     if (!email.trim()) return 'El correo es requerido';
     if (password.length < 8) return 'La contraseña debe tener mínimo 8 caracteres';
     if (password !== confirmPassword) return 'Las contraseñas no coinciden';
+    if (showPlayerFields && !birthDate.trim()) return 'La fecha de nacimiento es requerida';
     if (showPlayerFields && (jerseyNumber < 1 || jerseyNumber > 99)) return 'Dorsal debe estar entre 1 y 99';
     return null;
   };
@@ -52,6 +54,13 @@ export default function RegisterPage() {
         gender,
         birthDate: birthDate || undefined,
       });
+      if (userType === 'CAPITAN') {
+        navigate('/register/create-team', {
+          replace: true,
+          state: { email: email.trim(), captainName: name.trim() },
+        });
+        return;
+      }
       setSuccess(true);
       setTimeout(() => navigate('/login'), 2000);
     } catch (e) {
@@ -63,14 +72,12 @@ export default function RegisterPage() {
 
   return (
     <div style={s.root}>
-      {/* Circuit decoration top left */}
       <div style={s.circuitTop} />
 
       <header style={s.header}>
-        <a href="/login" style={s.backBtn}>← </a>
+        <a href="/login" style={s.backBtn}>Volver</a>
         <div style={s.logoCorner}>
-          <div style={s.logoBox}><span style={{ fontSize: 22 }}>⚽</span></div>
-          <span style={s.logoText}>TECHCUP</span>
+          <AppLogo height={72} />
         </div>
       </header>
 
@@ -79,20 +86,18 @@ export default function RegisterPage() {
         <p style={s.subtitle}>Completa toda la información para unirte a TechCup</p>
 
         {success && (
-          <div style={s.successBox}>✅ Perfil creado correctamente. Redirigiendo al login...</div>
+          <div style={s.successBox}>Perfil creado correctamente. Redirigiendo al login...</div>
         )}
-        {error && <div style={s.errorBox}>⚠️ {error}</div>}
+        {error && <div style={s.errorBox}>{error}</div>}
 
         <div style={s.formGrid}>
-          {/* Photo placeholder */}
           <div style={s.photoCol}>
             <div style={s.photoCircle}>
-              <span style={{ fontSize: 28 }}>↑</span>
+              <span style={s.photoPlus}>+</span>
               <span style={s.photoLabel}>SUBIR IMAGEN DE PERFIL</span>
             </div>
           </div>
 
-          {/* Fields col 1 */}
           <div style={s.fieldsCol}>
             <Field label="NOMBRE COMPLETO">
               <input style={s.input} placeholder="Ingresa tu nombre completo" value={name} onChange={(e) => setName(e.target.value)} />
@@ -101,14 +106,10 @@ export default function RegisterPage() {
               <input style={s.input} type="email" placeholder="correo@ejemplo.com" value={email} onChange={(e) => setEmail(e.target.value)} />
             </Field>
             <Field label="CONTRASEÑA">
-              <div style={s.pwdWrap}>
-                <span style={s.pwdIcon}>🔒</span>
-                <input style={{ ...s.input, paddingLeft: 36 }} type="password" placeholder="••••••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
-              </div>
+              <input style={s.input} type="password" placeholder="••••••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
             </Field>
           </div>
 
-          {/* Fields col 2 */}
           <div style={s.fieldsCol}>
             <Field label="IDENTIFICACIÓN">
               <input style={s.input} placeholder="Número de identificación" value={identification} onChange={(e) => setIdentification(e.target.value)} />
@@ -117,15 +118,11 @@ export default function RegisterPage() {
               <input style={s.input} type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} />
             </Field>
             <Field label="CONFIRMACIÓN CONTRASEÑA">
-              <div style={s.pwdWrap}>
-                <span style={s.pwdIcon}>🔒</span>
-                <input style={{ ...s.input, paddingLeft: 36 }} type="password" placeholder="••••••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-              </div>
+              <input style={s.input} type="password" placeholder="••••••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
             </Field>
           </div>
         </div>
 
-        {/* Role + player fields */}
         <div style={s.roleSection}>
           <div style={s.roleSelect}>
             <p style={s.roleTitle}>¿CÓMO DESEAS REGISTRARTE?</p>
@@ -204,10 +201,8 @@ const s: Record<string, CSSProperties> = {
     background: 'linear-gradient(90deg, #3a6b35 0%, #22c55e 50%, #3a6b35 100%)',
   },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '24px 40px 0' },
-  backBtn: { fontSize: 22, color: '#333', textDecoration: 'none', fontWeight: 700 },
+  backBtn: { fontSize: 16, color: '#333', textDecoration: 'none', fontWeight: 700 },
   logoCorner: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 },
-  logoBox: { width: 56, height: 56, border: '2px solid #3a6b35', borderRadius: 10, backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  logoText: { fontSize: 9, fontWeight: 800, color: '#3a6b35', letterSpacing: 2 },
 
   main: { maxWidth: 860, margin: '0 auto', padding: '32px 40px', display: 'flex', flexDirection: 'column', gap: 24 },
   title: { fontSize: 52, fontWeight: 900, letterSpacing: 6, color: '#111', fontFamily: "'Bebas Neue','Rajdhani',sans-serif", textAlign: 'center', margin: 0 },
@@ -219,12 +214,11 @@ const s: Record<string, CSSProperties> = {
   formGrid: { display: 'grid', gridTemplateColumns: '140px 1fr 1fr', gap: 24, alignItems: 'start' },
   photoCol: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
   photoCircle: { width: 120, height: 120, borderRadius: '50%', backgroundColor: '#3a6b35', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: '#fff', cursor: 'pointer' },
+  photoPlus: { fontSize: 36, fontWeight: 300, lineHeight: 1 },
   photoLabel: { fontSize: 9, fontWeight: 700, letterSpacing: 0.5, textAlign: 'center', lineHeight: 1.3 },
   fieldsCol: { display: 'flex', flexDirection: 'column', gap: 14 },
 
   input: { backgroundColor: '#e4e4dc', border: '1.5px solid transparent', borderRadius: 8, padding: '10px 14px', fontSize: 13, fontFamily: 'inherit', outline: 'none', width: '100%', boxSizing: 'border-box' },
-  pwdWrap: { position: 'relative' },
-  pwdIcon: { position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 14 },
 
   roleSection: { display: 'flex', gap: 24, backgroundColor: '#e8e8e0', borderRadius: 12, padding: '20px 24px' },
   roleSelect: { display: 'flex', flexDirection: 'column', gap: 12 },

@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { AppLogo } from '../../components/AppLogo';
 import { useFetch } from '../../hooks/useFetch';
 import { useAuth } from '../../hooks/useAuth';
 import TeamService from '../../services/team.service';
@@ -15,7 +16,8 @@ export default function TeamDetailPage() {
   const { data: players } = useFetch<ProfileDTO[]>(() => TeamService.getPlayers(teamId), [teamId]);
 
   const colors = team?.colors?.split(',') ?? [];
-  const isOrganizer = user?.role === 'ORGANIZADOR' || user?.role === 'ADMIN';
+  const isOrganizer =
+    user?.role === 'ORGANIZER' || user?.role === 'ORGANIZADOR' || user?.role === 'ADMIN';
 
   if (loading) return <div style={s.center}>Cargando equipo...</div>;
   if (error || !team) return (
@@ -30,8 +32,7 @@ export default function TeamDetailPage() {
       <header style={s.header}>
         <button style={s.backBtn} onClick={() => navigate('/teams')}>← Equipos</button>
         <div style={s.logoCorner}>
-          <div style={s.logoBox}><span style={{ fontSize: 20 }}>⚽</span></div>
-          <span style={s.logoText}>TECHCUP</span>
+          <AppLogo height={56} />
         </div>
       </header>
 
@@ -129,8 +130,6 @@ const s: Record<string, CSSProperties> = {
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', backgroundColor: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
   backBtn: { background: 'none', border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', color: '#22c55e', fontFamily: 'inherit' },
   logoCorner: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 },
-  logoBox: { width: 44, height: 44, border: '2px solid #3a6b35', borderRadius: 8, backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  logoText: { fontSize: 8, fontWeight: 800, color: '#3a6b35', letterSpacing: 2 },
 
   main: { maxWidth: 900, margin: '0 auto', padding: '28px 32px', display: 'flex', flexDirection: 'column', gap: 20 },
   heroCard: { backgroundColor: '#fff', borderRadius: 16, padding: '28px', display: 'flex', alignItems: 'center', gap: 28, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },

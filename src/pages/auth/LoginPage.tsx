@@ -2,6 +2,11 @@ import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../../services/auth.service';
+import { dashboardPath, normalizeRole } from '../../utils/roles';
+import { flushPendingTeamCreate } from '../../utils/pendingTeam';
+import { AppLogo } from '../../components/AppLogo';
+
+const LOGIN_SIDE_IMAGE = '/images/login-side.png';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -12,17 +17,25 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
-    if (!email || !password) { setError('Completa todos los campos'); return; }
-    setLoading(true); setError(null);
+    if (!email || !password) {
+      setError('Completa todos los campos');
+      return;
+    }
+    setLoading(true);
+    setError(null);
     try {
       const data = await AuthService.login({ email, password });
       const payload = JSON.parse(atob(data.token.split('.')[1]));
-      const role: string = payload.role ?? payload.authorities?.[0]?.replace('ROLE_', '') ?? 'JUGADOR';
+      const rawRole: string =
+        payload.role ?? payload.authorities?.[0]?.replace('ROLE_', '') ?? 'PLAYER';
+      const role = normalizeRole(rawRole);
       const authUser = { email: data.email, role, token: data.token };
       localStorage.setItem('tc_user', JSON.stringify(authUser));
-      if (role === 'ADMIN') navigate('/admin/dashboard');
-      else if (role === 'ORGANIZADOR') navigate('/organizer/dashboard');
-      else navigate('/standings');
+      const pending = await flushPendingTeamCreate();
+      if (pending === 'fail') {
+        setError('Sesión iniciada, pero no se pudo crear el equipo. Usa Gestionar equipo.');
+      }
+      navigate(dashboardPath(role));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Credenciales inválidas');
     } finally {
@@ -32,23 +45,18 @@ export default function LoginPage() {
 
   return (
     <div style={s.root}>
-      {/* Left panel */}
       <div style={s.left}>
-        {/* Circuit decoration */}
         <div style={s.circuitTopLeft} />
 
-        {/* Logo top right inside left panel */}
         <div style={s.logoCorner}>
-          <div style={s.logoBox}><span style={{ fontSize: 22 }}>⚽</span></div>
-          <span style={s.logoText}>TECHCUP</span>
+          <AppLogo height={72} />
         </div>
 
         <h1 style={s.title}>INICIO DE SESIÓN</h1>
 
         <div style={s.form}>
-          {/* Email */}
           <div style={s.field}>
-            <label style={s.label}>@ CORREO ELECTRÓNICO</label>
+            <label style={s.label}>CORREO ELECTRÓNICO</label>
             <input
               style={{ ...s.input, ...(error ? s.inputError : {}) }}
               type="email"
@@ -59,9 +67,8 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Password */}
           <div style={s.field}>
-            <label style={s.label}>🔒 CONTRASEÑA</label>
+            <label style={s.label}>CONTRASEÑA</label>
             <input
               style={{ ...s.input, ...(error ? s.inputError : {}) }}
               type="password"
@@ -72,7 +79,6 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Options row */}
           <div style={s.optionsRow}>
             <label style={s.checkLabel}>
               <input
@@ -86,24 +92,19 @@ export default function LoginPage() {
             <a href="#" style={s.forgotLink}>¿Olvidaste tu contraseña?</a>
           </div>
 
-          {/* Error */}
-          {error && <div style={s.errorBox}>⚠️ {error}</div>}
+          {error && <div style={s.errorBox}>{error}</div>}
 
-          {/* Submit */}
           <button style={s.submitBtn} onClick={handleSubmit} disabled={loading}>
             {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
           </button>
 
-          {/* Register link */}
           <p style={s.registerRow}>
             ¿No tienes una cuenta?{' '}
             <Link to="/register" style={s.registerLink}>CREAR PERFIL</Link>
           </p>
 
-          {/* Divider */}
           <div style={s.divider}><span style={s.dividerText}>O DESEAS CONTINUAR</span></div>
 
-          {/* Google */}
           <button style={s.googleBtn}>
             <svg width="18" height="18" viewBox="0 0 48 48" style={{ marginRight: 8 }}>
               <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.4 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z"/>
@@ -115,15 +116,13 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {/* Circuit decoration bottom */}
         <div style={s.circuitBottomRight} />
       </div>
 
-      {/* Right panel – goalkeeper image placeholder */}
       <div style={s.right}>
         <div style={s.imagePlaceholder}>
-          <span style={{ fontSize: 80 }}>🧤</span>
-          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, marginTop: 16 }}>TechCup</p>
+          <img src={LOGIN_SIDE_IMAGE} alt="" style={s.heroImg} />
+          <p style={s.heroCaption}>TECHCUP</p>
         </div>
       </div>
     </div>
@@ -141,7 +140,25 @@ const s: Record<string, CSSProperties> = {
     width: '48%', background: 'linear-gradient(135deg, #1a3a1a 0%, #2d5a2d 50%, #1a4a2a 100%)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  imagePlaceholder: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
+  imagePlaceholder: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+    padding: 24,
+    boxSizing: 'border-box',
+  },
+  heroImg: {
+    width: '100%',
+    maxWidth: 480,
+    maxHeight: 'min(85vh, 640px)',
+    objectFit: 'contain',
+    borderRadius: 12,
+    boxShadow: '0 12px 40px rgba(0,0,0,0.35)',
+  },
+  heroCaption: { color: 'rgba(255,255,255,0.75)', fontSize: 14, marginTop: 20, fontWeight: 600, letterSpacing: 2 },
 
   circuitTopLeft: {
     position: 'absolute', top: 20, left: 20, width: 180, height: 180,
@@ -156,11 +173,6 @@ const s: Record<string, CSSProperties> = {
     position: 'absolute', top: 16, right: 16,
     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
   },
-  logoBox: {
-    width: 56, height: 56, border: '2px solid #3a6b35', borderRadius: 10,
-    backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-  },
-  logoText: { fontSize: 9, fontWeight: 800, color: '#3a6b35', letterSpacing: 2 },
 
   title: {
     fontSize: 38, fontWeight: 900, letterSpacing: 4, color: '#111',

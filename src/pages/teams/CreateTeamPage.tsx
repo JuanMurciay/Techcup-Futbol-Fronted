@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import type { CSSProperties } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { AppLogo } from '../../components/AppLogo';
 import TeamService from '../../services/team.service';
 
 const MAIN_COLORS = ['#22c55e', '#3b82f6', '#ef4444', '#8b5cf6', '#111111'];
@@ -15,7 +16,7 @@ export default function CreateTeamPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleShieldUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleShieldUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
@@ -29,7 +30,7 @@ export default function CreateTeamPage() {
     try {
       const colors = `${primaryColor},${secondaryColor}`;
       await TeamService.create({ name, colors });
-      navigate('/teams');
+      navigate('/captain/dashboard');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Error al crear equipo');
     } finally {
@@ -39,12 +40,10 @@ export default function CreateTeamPage() {
 
   return (
     <div style={s.root}>
-      {/* Header */}
       <header style={s.header}>
         <Link to="/teams" style={s.backBtn}>←</Link>
         <div style={s.logoCorner}>
-          <div style={s.logoBox}><span style={{ fontSize: 20 }}>⚽</span></div>
-          <span style={s.logoText}>TECHCUP</span>
+          <AppLogo height={56} />
         </div>
       </header>
 
@@ -55,7 +54,6 @@ export default function CreateTeamPage() {
 
         {error && <div style={s.errorBox}>⚠️ {error}</div>}
 
-        {/* Team name */}
         <div style={s.section}>
           <label style={s.label}>Nombre de tu equipo</label>
           <input
@@ -67,9 +65,7 @@ export default function CreateTeamPage() {
           <p style={s.hint}>Este nombre aparecerá en la tabla de posiciones y partidos</p>
         </div>
 
-        {/* Colors + shield row */}
         <div style={s.customRow}>
-          {/* Uniform colors */}
           <div style={s.colorsSection}>
             <p style={s.sectionLabel}>Colores del uniforme</p>
             <div style={s.uniformPreview}>
@@ -107,7 +103,6 @@ export default function CreateTeamPage() {
             </div>
           </div>
 
-          {/* Shield upload */}
           <label style={s.shieldBox} htmlFor="shield-input">
             {shieldPreview ? (
               <img src={shieldPreview} alt="escudo" style={s.shieldImg} />
@@ -136,8 +131,6 @@ const s: Record<string, CSSProperties> = {
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '20px 40px' },
   backBtn: { fontSize: 22, color: '#333', textDecoration: 'none', fontWeight: 700 },
   logoCorner: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 },
-  logoBox: { width: 56, height: 56, border: '2px solid #3a6b35', borderRadius: 10, backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  logoText: { fontSize: 9, fontWeight: 800, color: '#3a6b35', letterSpacing: 2 },
 
   main: { maxWidth: 960, margin: '0 auto', padding: '0 40px 60px', display: 'flex', flexDirection: 'column', gap: 24 },
   title: { fontSize: 64, fontWeight: 900, letterSpacing: 6, color: '#111', fontFamily: "'Bebas Neue','Rajdhani',sans-serif", margin: 0, textAlign: 'center' },

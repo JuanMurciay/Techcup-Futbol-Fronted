@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../hooks/useFetch';
@@ -6,13 +6,8 @@ import { useAuth } from '../../hooks/useAuth';
 import MatchService from '../../services/match.service';
 import TeamService from '../../services/team.service';
 import type { Match, Team } from '../../types';
-
-const NAV = [
-  { icon: '⊞', label: 'INICIO', path: '/standings' },
-  { icon: '👥', label: 'EQUIPOS', path: '/teams' },
-  { icon: '📅', label: 'PARTIDOS', path: '/matches', active: true },
-  { icon: '📊', label: 'TABLA', path: '/standings' },
-];
+import { homePathFromStoredRole } from '../../utils/roles';
+import { AppLogo } from '../../components/AppLogo';
 
 const STATUS_COLOR: Record<string, string> = {
   Finalizado: '#22c55e',
@@ -22,8 +17,18 @@ const STATUS_COLOR: Record<string, string> = {
 
 export default function MatchesPage() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const userName = user?.email?.split('@')[0] ?? '';
+  const home = homePathFromStoredRole(user?.role);
+  const nav = useMemo(
+    () => [
+      { icon: '\u229E', label: 'INICIO', path: home },
+      { icon: '\u{1F465}', label: 'EQUIPOS', path: '/teams' },
+      { icon: '\u{1F4C5}', label: 'PARTIDOS', path: '/matches' },
+      { icon: '\u{1F4CA}', label: 'TABLA', path: '/standings' },
+    ],
+    [home],
+  );
 
   const { data: matches, loading } = useFetch<Match[]>(() => MatchService.getAll());
   const { data: teams } = useFetch<Team[]>(() => TeamService.getAll());
@@ -41,11 +46,14 @@ export default function MatchesPage() {
       <aside style={s.sidebar}>
         <div style={s.sideTop}>
           <div style={s.sidebarLogo}>
-            <div style={s.logoBox}><span style={{ fontSize: 20 }}>⚽</span></div>
-            <span style={s.logoText}>TechCup</span>
+            <AppLogo height={44} />
           </div>
-          {NAV.map(({ icon, label, path, active }) => (
-            <a key={label} href={path} style={{ ...s.navItem, ...(active ? s.navActive : {}) }}>
+          {nav.map(({ icon, label, path }) => (
+            <a
+              key={label}
+              href={path}
+              style={{ ...s.navItem, ...(path === '/matches' ? s.navActive : {}) }}
+            >
               <span>{icon}</span>
               <span style={s.navLabel}>{label}</span>
             </a>
@@ -126,8 +134,6 @@ const s: Record<string, CSSProperties> = {
   sidebar: { width: 80, backgroundColor: '#22c55e', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 16, position: 'sticky', top: 0, height: '100vh' },
   sideTop: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, paddingTop: 12, width: '100%' },
   sidebarLogo: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, marginBottom: 12 },
-  logoBox: { width: 44, height: 44, borderRadius: 8, backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  logoText: { fontSize: 8, fontWeight: 700, color: '#fff', letterSpacing: 1 },
   navItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '10px 6px', textDecoration: 'none', color: 'rgba(255,255,255,0.75)', borderRadius: 8, width: '90%' },
   navActive: { backgroundColor: 'rgba(0,0,0,0.15)', color: '#fff' },
   navLabel: { fontSize: 8, fontWeight: 700, letterSpacing: 0.5, color: 'inherit' },

@@ -6,6 +6,7 @@ import TeamService from '../../services/team.service';
 import TournamentService from '../../services/tournament.service';
 import MatchService from '../../services/match.service';
 import type { Team, Tournament, Match, StandingDTO } from '../../types';
+import { AppLogo } from '../../components/AppLogo';
 
 export default function OrganizerDashboard() {
   const { user, logout } = useAuth();
@@ -67,8 +68,7 @@ export default function OrganizerDashboard() {
       <aside style={s.sidebar}>
         <div style={s.sideTop}>
           <div style={s.sidebarLogo}>
-            <div style={s.logoBox}><span>⚽</span></div>
-            <span style={s.logoText}>TechCup</span>
+            <AppLogo height={44} />
           </div>
           {ORG_NAV.map(({ icon, label, path, active }) => (
             <a key={label} href={path} style={{ ...s.navItem, ...(active ? s.navActive : {}) }}>
@@ -266,7 +266,7 @@ const ORG_NAV = [
   { icon: '👥', label: 'EQUIPOS', path: '/teams' },
   { icon: '📊', label: 'ESTADÍSTICAS', path: '/standings' },
   { icon: '📅', label: 'PARTIDOS', path: '/matches' },
-  { icon: '🏆', label: 'TORNEOS', path: '/tournaments' },
+  { icon: '🏆', label: 'TORNEOS', path: '/organizer/dashboard' },
 ];
 
 const s: Record<string, CSSProperties> = {
@@ -274,8 +274,6 @@ const s: Record<string, CSSProperties> = {
   sidebar: { width: 80, backgroundColor: '#22c55e', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 16, position: 'sticky', top: 0, height: '100vh' },
   sideTop: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, paddingTop: 12, width: '100%' },
   sidebarLogo: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, marginBottom: 10 },
-  logoBox: { width: 44, height: 44, borderRadius: 8, backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 },
-  logoText: { fontSize: 8, fontWeight: 700, color: '#fff', letterSpacing: 1 },
   navItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '10px 6px', textDecoration: 'none', color: 'rgba(255,255,255,0.75)', borderRadius: 8, width: '90%' },
   navActive: { backgroundColor: 'rgba(0,0,0,0.15)', color: '#fff' },
   navIcon: { fontSize: 20 },
