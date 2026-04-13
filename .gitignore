@@ -1,16 +1,67 @@
-# Compiled class file
-*.class
+# Dependencies
+node_modules/
 
-# Log file
+# Build output
+dist/
+build/
+*.local
+
+# Environment (secrets / machine-specific)
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# BlueJ files
+# Vite
+.vite/
+
+# TypeScript
+*.tsbuildinfo
+
+# Tests & coverage (si añades tests después)
+coverage/
+*.lcov
+.nyc_output/
+
+# Caches
+.cache/
+.parcel-cache/
+.turbo/
+
+# Editor / IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# VS Code — ignorar ajustes locales; se puede versionar extensions.json si quieres
+.vscode/*
+!.vscode/extensions.json
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Despliegue / CI local
+.vercel/
+.netlify/
+
+# Misc
+*.tgz
+
+# --- Java / JVM (por si trabajas con herramientas Java en el mismo repo) ---
+*.class
 *.ctxt
-
-# Mobile Tools for Java (J2ME)
 .mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -18,7 +69,5 @@
 *.zip
 *.tar.gz
 *.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
