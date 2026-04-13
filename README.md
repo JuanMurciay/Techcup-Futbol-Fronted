@@ -1,5 +1,27 @@
 # Techcup Futbol Frontend
 
+## Instrucciones de Ejecución
+
+### Pasos para ejecutar localmente
+
+1. Clonar el repositorio:
+
+   `git clone https://github.com/JuanMurciay/Techcup-Futbol-Fronted.git`
+
+2. Navegar a la carpeta del proyecto:
+
+   `cd Techcup-Futbol-Fronted`
+
+3. Ejecutar la aplicación:
+
+   `npm run dev`
+
+4. La aplicación estará disponible en `http://localhost:5173/`
+
+
+5. Ejecutar Back-End, Front-end y base de datos de docker para la correcta ejecucion del programa.
+
+
 ![Logo.png](Images/Logo.png)
 
 ### Manual de identidad
