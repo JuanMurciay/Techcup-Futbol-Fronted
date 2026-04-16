@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export function useFetch<T>(
-  fetchFn: () => Promise<T>,
-  deps: unknown[] = [],
-) {
+export function useFetch<T>(fetchFn: () => Promise<T>, deps: unknown[] = []) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +18,9 @@ export function useFetch<T>(
     }
   }, deps);
 
-  useEffect(() => { execute(); }, [execute]);
+  useEffect(() => {
+    execute();
+  }, [execute]);
 
   return { data, loading, error, refetch: execute };
 }

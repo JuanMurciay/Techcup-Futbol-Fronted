@@ -105,7 +105,9 @@ const PlayerService = {
   },
 
   respondToInvitation: async (playerId: number, teamId: number, action: 'ACCEPT' | 'REJECT') => {
-    const res = await apiClient.patch(`/api/v1/players/${playerId}/invitations/${teamId}`, { action });
+    const res = await apiClient.patch(`/api/v1/players/${playerId}/invitations/${teamId}`, {
+      action,
+    });
     return res.data;
   },
 };

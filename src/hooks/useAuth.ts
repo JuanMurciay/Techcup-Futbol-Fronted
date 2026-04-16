@@ -22,28 +22,31 @@ export function useAuth() {
 
   const user = getUser();
 
-  const login = useCallback(async (email: string, password: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await AuthService.login({ email, password });
-      const payload = JSON.parse(atob(data.token.split('.')[1]));
-      const rawRole: string =
-        payload.role ?? payload.authorities?.[0]?.replace('ROLE_', '') ?? 'PLAYER';
-      const role = normalizeRole(rawRole);
-      const authUser: AuthUser = { email: data.email, role, token: data.token };
-      localStorage.setItem('tc_user', JSON.stringify(authUser));
-      const pending = await flushPendingTeamCreate();
-      if (pending === 'fail') {
-        setError('Sesión iniciada, pero no se pudo crear el equipo.');
+  const login = useCallback(
+    async (email: string, password: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await AuthService.login({ email, password });
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
+        const rawRole: string =
+          payload.role ?? payload.authorities?.[0]?.replace('ROLE_', '') ?? 'PLAYER';
+        const role = normalizeRole(rawRole);
+        const authUser: AuthUser = { email: data.email, role, token: data.token };
+        localStorage.setItem('tc_user', JSON.stringify(authUser));
+        const pending = await flushPendingTeamCreate();
+        if (pending === 'fail') {
+          setError('Sesión iniciada, pero no se pudo crear el equipo.');
+        }
+        navigate(dashboardPath(role));
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Error al iniciar sesión');
+      } finally {
+        setLoading(false);
       }
-      navigate(dashboardPath(role));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Error al iniciar sesión');
-    } finally {
-      setLoading(false);
-    }
-  }, [navigate]);
+    },
+    [navigate],
+  );
 
   const logout = useCallback(() => {
     localStorage.removeItem('tc_user');

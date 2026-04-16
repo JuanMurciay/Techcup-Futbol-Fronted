@@ -22,7 +22,9 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
       if (user.token) {
         config.headers.set('Authorization', `Bearer ${user.token}`);
       }
-    } catch {}
+    } catch {
+      // Ignore corrupted local storage payloads and continue request without token.
+    }
   }
   return config;
 });

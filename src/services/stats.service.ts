@@ -18,7 +18,9 @@ const StatsService = {
   },
 
   getTopScorersByTournament: async (tournamentId: number) => {
-    const res = await apiClient.get<PlayerStats[]>(`/api/v1/stats/tournaments/${tournamentId}/top-scorers`);
+    const res = await apiClient.get<PlayerStats[]>(
+      `/api/v1/stats/tournaments/${tournamentId}/top-scorers`,
+    );
     return res.data;
   },
 
