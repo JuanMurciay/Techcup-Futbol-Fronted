@@ -1,7 +1,8 @@
 import axios from 'axios';
 import type { InternalAxiosRequestConfig } from 'axios';
 
-function resolveBaseURL(): string {
+/** Base URL para peticiones Axios (`/api/...`). En dev suele ser '' para usar el proxy de Vite. */
+export function resolveApiBaseURL(): string {
   const env = import.meta.env.VITE_API_URL;
   if (typeof env === 'string' && env.trim()) return env.replace(/\/$/, '');
   if (import.meta.env.DEV) return '';
@@ -9,7 +10,7 @@ function resolveBaseURL(): string {
 }
 
 const apiClient = axios.create({
-  baseURL: resolveBaseURL(),
+  baseURL: resolveApiBaseURL(),
   timeout: 10000,
   headers: { 'Content-Type': 'application/json' },
 });
