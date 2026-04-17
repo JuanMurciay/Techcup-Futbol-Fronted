@@ -1,4 +1,6 @@
 import apiClient from './apiClient';
+import { httpGet, httpPatch, httpPost } from './http';
+import type { ApprovePaymentRequestDTO, CreatePaymentRequestDTO, RejectPaymentRequestDTO } from '../types/api/payment';
 
 export interface Payment {
   id: number;
@@ -10,9 +12,8 @@ export interface Payment {
 }
 
 const PaymentService = {
-  create: async (data: { teamId: number; receiptUrl?: string }) => {
-    const res = await apiClient.post('/api/v1/payments', data);
-    return res.data;
+  create: async (data: CreatePaymentRequestDTO) => {
+    return httpPost<Payment, CreatePaymentRequestDTO>('/api/v1/payments', data);
   },
 
   uploadReceipt: async (teamId: number, file: File) => {
@@ -22,37 +23,31 @@ const PaymentService = {
     const res = await apiClient.post('/api/v1/payments/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
-    return res.data;
+    return res.data as Payment;
   },
 
   getAll: async () => {
-    const res = await apiClient.get<Payment[]>('/api/v1/payments');
-    return res.data;
+    return httpGet<Payment[]>('/api/v1/payments');
   },
 
   getById: async (id: number) => {
-    const res = await apiClient.get<Payment>(`/api/v1/payments/${id}`);
-    return res.data;
+    return httpGet<Payment>(`/api/v1/payments/${id}`);
   },
 
   getByTeam: async (teamId: number) => {
-    const res = await apiClient.get<Payment>(`/api/v1/payments/team/${teamId}`);
-    return res.data;
+    return httpGet<Payment>(`/api/v1/payments/team/${teamId}`);
   },
 
   approve: async (id: number, approvedBy: string) => {
-    const res = await apiClient.patch(`/api/v1/payments/${id}/approve`, { approvedBy });
-    return res.data;
+    return httpPatch<unknown, ApprovePaymentRequestDTO>(`/api/v1/payments/${id}/approve`, { approvedBy });
   },
 
   reject: async (id: number, comments: string) => {
-    const res = await apiClient.patch(`/api/v1/payments/${id}/reject`, { comments });
-    return res.data;
+    return httpPatch<unknown, RejectPaymentRequestDTO>(`/api/v1/payments/${id}/reject`, { comments });
   },
 
   sendToReview: async (id: number) => {
-    const res = await apiClient.patch(`/api/v1/payments/${id}/review`);
-    return res.data;
+    return httpPatch<unknown>(`/api/v1/payments/${id}/review`);
   },
 };
 

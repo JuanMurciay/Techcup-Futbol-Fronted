@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import { ApiError } from '../services/apiError';
 import PlayerService from '../services/player.service';
 import type { ProfileDTO } from '../types';
+import { saveStoredProfilePhoto } from '../utils/profilePhoto';
 
 interface ProfileFormValues {
   fullName: string;
@@ -17,6 +19,7 @@ export function useProfileEditor(initialProfile: ProfileDTO | null, onSaved?: ()
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(initialProfile?.profilePhoto ?? null);
 
   const initialValues = useMemo<ProfileFormValues>(
     () => ({
@@ -33,6 +36,7 @@ export function useProfileEditor(initialProfile: ProfileDTO | null, onSaved?: ()
 
   useEffect(() => {
     setValues(initialValues);
+    setPhotoPreview(initialProfile?.profilePhoto ?? null);
   }, [initialValues]);
 
   const setField = (field: keyof ProfileFormValues, value: string) => {
@@ -72,11 +76,43 @@ export function useProfileEditor(initialProfile: ProfileDTO | null, onSaved?: ()
       setSuccess('Perfil deportivo actualizado correctamente.');
       onSaved?.();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'No se pudo guardar el perfil.');
+      if (e instanceof ApiError) {
+        setError(e.kind === 'NETWORK' ? `Error de red: ${e.message}` : e.message);
+      } else {
+        setError(e instanceof Error ? e.message : 'No se pudo guardar el perfil.');
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  return { values, errors, loading, error, success, setField, save };
+  const updatePhoto = async (photo: File) => {
+    if (!initialProfile) return;
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      await PlayerService.updatePhoto(initialProfile.id, photo);
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        const dataUrl = typeof fileReader.result === 'string' ? fileReader.result : null;
+        if (!dataUrl) return;
+        saveStoredProfilePhoto(initialProfile.id, dataUrl);
+        setPhotoPreview(dataUrl);
+      };
+      fileReader.readAsDataURL(photo);
+      setSuccess('Foto de perfil actualizada correctamente.');
+      onSaved?.();
+    } catch (e) {
+      if (e instanceof ApiError) {
+        setError(e.kind === 'NETWORK' ? `Error de red: ${e.message}` : e.message);
+      } else {
+        setError(e instanceof Error ? e.message : 'No se pudo actualizar la foto de perfil.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { values, errors, loading, error, success, photoPreview, setField, save, updatePhoto };
 }

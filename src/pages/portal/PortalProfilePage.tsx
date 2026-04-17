@@ -6,6 +6,7 @@ import StatePanel from '../../components/portal/StatePanel';
 import { usePlayerPortalData } from '../../hooks/usePlayerPortalData';
 import { useProfileEditor } from '../../hooks/useProfileEditor';
 import { AUTH_IMAGE_ASSETS } from '../../features/auth/constants';
+import type { ChangeEvent } from 'react';
 
 interface PortalProfilePageProps {
   mode: 'player' | 'captain';
@@ -20,6 +21,12 @@ export default function PortalProfilePage({ mode }: PortalProfilePageProps) {
   const basePath = mode === 'captain' ? '/captain' : '/player';
   const roleLabel = mode === 'captain' ? 'CAPITÁN' : 'JUGADOR';
 
+  const onProfilePhotoChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    await editor.updatePhoto(file);
+  };
+
   return (
     <PortalShell title="Perfil" roleLabel={roleLabel} basePath={basePath} player={player}>
       {loading ? <StatePanel type="loading" message="Cargando perfil..." /> : null}
@@ -30,13 +37,17 @@ export default function PortalProfilePage({ mode }: PortalProfilePageProps) {
           <article className="tc-portal-card">
             <div className="tc-profile-avatar-wrap">
               <img
-                src={AUTH_IMAGE_ASSETS.playerAvatar}
+                src={editor.photoPreview ?? AUTH_IMAGE_ASSETS.playerAvatar}
                 alt="Avatar del jugador"
                 onError={(e) => {
                   e.currentTarget.src = AUTH_IMAGE_ASSETS.techcupLogo;
                 }}
               />
             </div>
+            <label className="tc-profile-photo-upload">
+              <span>Subir foto de perfil</span>
+              <input type="file" accept="image/*" onChange={onProfilePhotoChange} />
+            </label>
             <h2>DATOS DEL JUGADOR</h2>
             <div className="tc-profile-grid">
               <TextField

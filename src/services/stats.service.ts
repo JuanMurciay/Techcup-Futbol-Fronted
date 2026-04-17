@@ -1,5 +1,5 @@
-import apiClient from './apiClient';
 import type { StandingDTO } from '../types';
+import { httpGet } from './http';
 
 export interface PlayerStats {
   playerId: number;
@@ -14,25 +14,21 @@ export interface PlayerStats {
 
 const StatsService = {
   getTopScorers: async () => {
-    const res = await apiClient.get<PlayerStats[]>('/api/v1/stats/top-scorers');
-    return res.data;
+    return httpGet<PlayerStats[]>('/api/v1/stats/top-scorers');
   },
 
   getTopScorersByTournament: async (tournamentId: number) => {
-    const res = await apiClient.get<PlayerStats[]>(
+    return httpGet<PlayerStats[]>(
       `/api/v1/stats/tournaments/${tournamentId}/top-scorers`,
     );
-    return res.data;
   },
 
   getPlayerStats: async (id: number) => {
-    const res = await apiClient.get<PlayerStats>(`/api/v1/stats/players/${id}`);
-    return res.data;
+    return httpGet<PlayerStats>(`/api/v1/stats/players/${id}`);
   },
 
   getTeamStats: async (id: number) => {
-    const res = await apiClient.get<StandingDTO>(`/api/v1/stats/teams/${id}`);
-    return res.data;
+    return httpGet<StandingDTO>(`/api/v1/stats/teams/${id}`);
   },
 };
 

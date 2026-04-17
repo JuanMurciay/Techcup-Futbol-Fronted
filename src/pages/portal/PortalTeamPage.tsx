@@ -5,7 +5,7 @@ import { usePlayerPortalData } from '../../hooks/usePlayerPortalData';
 import TeamService from '../../services/team.service';
 
 interface PortalTeamPageProps {
-  mode: 'player' | 'captain';
+  mode: 'player' | 'captain' | 'organizer' | 'admin' | 'referee';
 }
 
 export default function PortalTeamPage({ mode }: PortalTeamPageProps) {
@@ -34,8 +34,18 @@ export default function PortalTeamPage({ mode }: PortalTeamPageProps) {
     }
   };
 
-  const basePath = mode === 'captain' ? '/captain' : '/player';
-  const roleLabel = mode === 'captain' ? 'CAPITÁN' : 'JUGADOR';
+  const basePath =
+    mode === 'captain'
+      ? '/captain'
+      : mode === 'organizer'
+        ? '/organizer'
+        : mode === 'admin'
+          ? '/admin'
+          : mode === 'referee'
+            ? '/referee'
+            : '/player';
+  const roleLabel =
+    mode === 'captain' ? 'CAPITÁN' : mode === 'organizer' ? 'ORGANIZADOR' : mode === 'admin' ? 'STAFF' : mode === 'referee' ? 'ÁRBITRO' : 'JUGADOR';
 
   return (
     <PortalShell title="Mi equipo" roleLabel={roleLabel} basePath={basePath} player={player}>

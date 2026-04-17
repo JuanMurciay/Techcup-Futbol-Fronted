@@ -1,35 +1,30 @@
-import apiClient from './apiClient';
 import type { Match, MatchEvent } from '../types';
+import { httpGet, httpPatch, httpPost } from './http';
+import type { RegisterEventRequestDTO, RegisterResultRequestDTO, UpdateMatchStatusRequestDTO } from '../types/api/match';
 
 const MatchService = {
   getAll: async () => {
-    const res = await apiClient.get<Match[]>('/api/v1/matches');
-    return res.data;
+    return httpGet<Match[]>('/api/v1/matches');
   },
 
   getById: async (id: number) => {
-    const res = await apiClient.get<Match>(`/api/v1/matches/${id}`);
-    return res.data;
+    return httpGet<Match>(`/api/v1/matches/${id}`);
   },
 
   getEvents: async (id: number) => {
-    const res = await apiClient.get<MatchEvent[]>(`/api/v1/matches/${id}/events`);
-    return res.data;
+    return httpGet<MatchEvent[]>(`/api/v1/matches/${id}/events`);
   },
 
-  registerResult: async (id: number, data: { homeGoals: number; awayGoals: number }) => {
-    const res = await apiClient.patch(`/api/v1/matches/${id}/result`, data);
-    return res.data;
+  registerResult: async (id: number, data: RegisterResultRequestDTO) => {
+    return httpPatch<unknown, RegisterResultRequestDTO>(`/api/v1/matches/${id}/result`, data);
   },
 
-  registerEvent: async (id: number, data: { type: string; playerId: number; minute: number }) => {
-    const res = await apiClient.post(`/api/v1/matches/${id}/events`, data);
-    return res.data;
+  registerEvent: async (id: number, data: RegisterEventRequestDTO) => {
+    return httpPost<unknown, RegisterEventRequestDTO>(`/api/v1/matches/${id}/events`, data);
   },
 
   updateStatus: async (id: number, status: string) => {
-    const res = await apiClient.patch(`/api/v1/matches/${id}/status`, { status });
-    return res.data;
+    return httpPatch<unknown, UpdateMatchStatusRequestDTO>(`/api/v1/matches/${id}/status`, { status });
   },
 };
 

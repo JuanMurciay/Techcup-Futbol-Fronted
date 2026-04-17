@@ -38,7 +38,7 @@ export default function PortalDashboardPage({ mode }: PortalDashboardPageProps) 
       const user = JSON.parse(raw) as { email: string; token: string; role: string };
       localStorage.setItem('tc_user', JSON.stringify({ ...user, role: 'CAPTAIN' }));
     }
-    navigate('/captain/dashboard');
+    navigate('/captain/create-team');
   };
 
   return (

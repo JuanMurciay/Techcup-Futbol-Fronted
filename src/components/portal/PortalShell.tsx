@@ -1,27 +1,71 @@
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useMemo, useState, type ReactNode } from 'react';
 import { AUTH_IMAGE_ASSETS } from '../../features/auth/constants';
 import type { ProfileDTO } from '../../types';
 
+type PortalBasePath = '/player' | '/captain' | '/organizer' | '/admin' | '/referee';
+
 interface PortalShellProps {
   title: string;
   roleLabel: string;
-  basePath: '/player' | '/captain';
+  basePath: PortalBasePath;
   player: ProfileDTO | null;
   children: ReactNode;
+}
+
+interface PortalNavItem {
+  to: string;
+  label: string;
 }
 
 export default function PortalShell({ title, roleLabel, basePath, player, children }: PortalShellProps) {
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const displayName = useMemo(() => player?.fullName ?? 'Jugador TechCup', [player?.fullName]);
-  const currentHash = location.hash ?? '';
 
-  const linkClassName = (isActive: boolean) => (isActive ? 'active' : '');
-  const dashboardActive = location.pathname === `${basePath}/dashboard` && !currentHash;
-  const matchesActive = location.pathname === `${basePath}/dashboard` && currentHash === '#matches';
-  const statsActive = location.pathname === `${basePath}/dashboard` && currentHash === '#stats';
+  const navItems = useMemo<PortalNavItem[]>(() => {
+    if (basePath === '/admin') {
+      return [
+        { to: `${basePath}/dashboard`, label: 'INICIO' },
+        { to: `${basePath}/users`, label: 'USUARIOS' },
+        { to: `${basePath}/tournaments`, label: 'TORNEOS' },
+        { to: `${basePath}/matches`, label: 'PARTIDOS' },
+        { to: `${basePath}/stats`, label: 'ESTADÍSTICAS' },
+        { to: `${basePath}/settings`, label: 'CONFIGURACIÓN' },
+      ];
+    }
+    if (basePath === '/organizer') {
+      return [
+        { to: `${basePath}/dashboard`, label: 'INICIO' },
+        { to: `${basePath}/team`, label: 'MI EQUIPO' },
+        { to: `${basePath}/tournaments`, label: 'TORNEOS' },
+        { to: `${basePath}/matches`, label: 'PARTIDOS' },
+        { to: `${basePath}/stats`, label: 'ESTADÍSTICAS' },
+      ];
+    }
+    if (basePath === '/referee') {
+      return [
+        { to: `${basePath}/dashboard`, label: 'INICIO' },
+        { to: `${basePath}/team`, label: 'MI EQUIPO' },
+        { to: `${basePath}/tournaments`, label: 'TORNEOS' },
+        { to: `${basePath}/matches`, label: 'PARTIDOS' },
+        { to: `${basePath}/stats`, label: 'ESTADÍSTICAS' },
+      ];
+    }
+    return [
+      { to: `${basePath}/dashboard`, label: 'INICIO' },
+      { to: `${basePath}/team`, label: 'MI EQUIPO' },
+      { to: `${basePath}/tournaments`, label: 'TORNEOS' },
+      { to: `${basePath}/matches`, label: 'PARTIDOS' },
+      { to: `${basePath}/stats`, label: 'ESTADÍSTICAS' },
+    ];
+  }, [basePath]);
+
+  const roleClassName = useMemo(() => {
+    if (basePath === '/admin') return 'tc-role-admin';
+    if (basePath === '/organizer') return 'tc-role-organizer';
+    return '';
+  }, [basePath]);
 
   const logout = () => {
     localStorage.removeItem('tc_user');
@@ -42,21 +86,11 @@ export default function PortalShell({ title, roleLabel, basePath, player, childr
         </Link>
 
         <nav className="tc-portal-nav">
-          <NavLink to={`${basePath}/dashboard`} end className={linkClassName(dashboardActive)}>
-            INICIO
-          </NavLink>
-          <NavLink to={`${basePath}/team`} className={({ isActive }) => linkClassName(isActive)}>
-            MI EQUIPO
-          </NavLink>
-          <NavLink to={`${basePath}/tournaments`} className={({ isActive }) => linkClassName(isActive)}>
-            TORNEOS
-          </NavLink>
-          <NavLink to={`${basePath}/dashboard#matches`} className={linkClassName(matchesActive)}>
-            PARTIDOS
-          </NavLink>
-          <NavLink to={`${basePath}/dashboard#stats`} className={linkClassName(statsActive)}>
-            ESTADÍSTICAS
-          </NavLink>
+          {navItems.map((item) => (
+            <NavLink key={item.to} to={item.to} className={({ isActive }) => (isActive ? 'active' : '')}>
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
 
         <div className="tc-portal-right-actions">
@@ -86,7 +120,7 @@ export default function PortalShell({ title, roleLabel, basePath, player, childr
           <h1>{displayName.toUpperCase()}</h1>
           <span>{player?.email ?? 'sin-correo@techcup.local'}</span>
         </div>
-        <div className="tc-portal-role-chip">{roleLabel}</div>
+        <div className={`tc-portal-role-chip ${roleClassName}`}>{roleLabel}</div>
       </section>
 
       <section className="tc-portal-content">{children}</section>

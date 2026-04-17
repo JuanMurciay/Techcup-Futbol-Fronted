@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import PlayerPortalService from '../services/playerPortal.service';
 import TeamService from '../services/team.service';
 import type { DashboardKPIs, MatchSummary, ProfileDTO, StandingDTO, Tournament } from '../types';
+import { getStoredProfilePhoto } from '../utils/profilePhoto';
 
 interface PortalDataState {
   loading: boolean;
@@ -59,19 +60,21 @@ export function usePlayerPortalData() {
       try {
         const player = await PlayerPortalService.getCurrentPlayerByEmail(authUser.email);
         if (!player) throw new Error('No se encontró el perfil del jugador para la sesión actual.');
+        const profilePhoto = getStoredProfilePhoto(player.id);
+        const playerWithPhoto = profilePhoto ? { ...player, profilePhoto } : player;
 
         const [kpis, teamStanding, tournaments, matches, paymentStatus] = await Promise.all([
-          PlayerPortalService.getPlayerKpis(player.id),
-          PlayerPortalService.getPlayerTeamStanding(player.teamId),
+          PlayerPortalService.getPlayerKpis(playerWithPhoto.id),
+          PlayerPortalService.getPlayerTeamStanding(playerWithPhoto.teamId),
           PlayerPortalService.getAllTournaments(),
           PlayerPortalService.getAllMatches(),
-          PlayerPortalService.getTeamPaymentStatus(player.teamId),
+          PlayerPortalService.getTeamPaymentStatus(playerWithPhoto.teamId),
         ]);
 
         let teamPlayers: ProfileDTO[] = [];
-        if (player.teamId) {
+        if (playerWithPhoto.teamId) {
           try {
-            teamPlayers = await TeamService.getPlayers(player.teamId);
+            teamPlayers = await TeamService.getPlayers(playerWithPhoto.teamId);
           } catch {
             teamPlayers = [];
           }
@@ -81,7 +84,7 @@ export function usePlayerPortalData() {
         setState({
           loading: false,
           error: null,
-          player,
+          player: playerWithPhoto,
           kpis,
           teamStanding,
           teamPlayers,

@@ -3,13 +3,23 @@ import StatePanel from '../../components/portal/StatePanel';
 import { usePlayerPortalData } from '../../hooks/usePlayerPortalData';
 
 interface PortalTournamentsPageProps {
-  mode: 'player' | 'captain';
+  mode: 'player' | 'captain' | 'organizer' | 'admin' | 'referee';
 }
 
 export default function PortalTournamentsPage({ mode }: PortalTournamentsPageProps) {
   const { loading, error, player, tournaments, refresh } = usePlayerPortalData();
-  const basePath = mode === 'captain' ? '/captain' : '/player';
-  const roleLabel = mode === 'captain' ? 'CAPITÁN' : 'JUGADOR';
+  const basePath =
+    mode === 'captain'
+      ? '/captain'
+      : mode === 'organizer'
+        ? '/organizer'
+        : mode === 'admin'
+          ? '/admin'
+          : mode === 'referee'
+            ? '/referee'
+            : '/player';
+  const roleLabel =
+    mode === 'captain' ? 'CAPITÁN' : mode === 'organizer' ? 'ORGANIZADOR' : mode === 'admin' ? 'STAFF' : mode === 'referee' ? 'ÁRBITRO' : 'JUGADOR';
 
   const twoColumns = [tournaments.slice(0, 5), tournaments.slice(5, 10)];
 

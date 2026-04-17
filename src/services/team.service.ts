@@ -1,40 +1,34 @@
-import apiClient from './apiClient';
 import type { Team, ProfileDTO } from '../types';
+import { httpDelete, httpGet, httpPatch, httpPost } from './http';
+import type { TeamCreateRequestDTO, TeamInvitationRequestDTO, UpdateTeamShieldRequestDTO } from '../types/api/team';
 
 const TeamService = {
   getAll: async () => {
-    const res = await apiClient.get<Team[]>('/api/v1/teams');
-    return res.data;
+    return httpGet<Team[]>('/api/v1/teams');
   },
 
   getById: async (id: number) => {
-    const res = await apiClient.get<Team>(`/api/v1/teams/${id}`);
-    return res.data;
+    return httpGet<Team>(`/api/v1/teams/${id}`);
   },
 
-  create: async (data: { name: string; colors: string }) => {
-    const res = await apiClient.post('/api/v1/teams', data);
-    return res.data;
+  create: async (data: TeamCreateRequestDTO) => {
+    return httpPost<unknown, TeamCreateRequestDTO>('/api/v1/teams', data);
   },
 
   getPlayers: async (id: number) => {
-    const res = await apiClient.get<ProfileDTO[]>(`/api/v1/teams/${id}/players`);
-    return res.data;
+    return httpGet<ProfileDTO[]>(`/api/v1/teams/${id}/players`);
   },
 
   sendInvitation: async (teamId: number, playerId: number) => {
-    const res = await apiClient.post(`/api/v1/teams/${teamId}/invitations`, { playerId });
-    return res.data;
+    return httpPost<unknown, TeamInvitationRequestDTO>(`/api/v1/teams/${teamId}/invitations`, { playerId });
   },
 
   removePlayer: async (teamId: number, playerId: number) => {
-    const res = await apiClient.delete(`/api/v1/teams/${teamId}/players/${playerId}`);
-    return res.data;
+    return httpDelete<unknown>(`/api/v1/teams/${teamId}/players/${playerId}`);
   },
 
   updateShield: async (id: number, shieldUrl: string) => {
-    const res = await apiClient.patch(`/api/v1/teams/${id}/shield`, { shieldUrl });
-    return res.data;
+    return httpPatch<unknown, UpdateTeamShieldRequestDTO>(`/api/v1/teams/${id}/shield`, { shieldUrl });
   },
 };
 

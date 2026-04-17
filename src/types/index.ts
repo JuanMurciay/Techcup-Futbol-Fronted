@@ -92,6 +92,7 @@ export interface PlayerRegistrationRequest {
   birthDate?: string;
   program?: string;
   semester?: number;
+  profilePhoto?: File;
 }
 
 export interface PlayerStats {

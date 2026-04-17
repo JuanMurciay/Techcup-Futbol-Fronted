@@ -1,5 +1,5 @@
-import apiClient from './apiClient';
 import type { Match } from '../types';
+import { httpGet } from './http';
 
 export interface RefereeUser {
   id: number;
@@ -10,18 +10,15 @@ export interface RefereeUser {
 
 const RefereeService = {
   getAll: async () => {
-    const res = await apiClient.get<RefereeUser[]>('/api/v1/referees');
-    return res.data;
+    return httpGet<RefereeUser[]>('/api/v1/referees');
   },
 
   getById: async (id: number) => {
-    const res = await apiClient.get<RefereeUser>(`/api/v1/referees/${id}`);
-    return res.data;
+    return httpGet<RefereeUser>(`/api/v1/referees/${id}`);
   },
 
   getMatches: async (id: number) => {
-    const res = await apiClient.get<Match[]>(`/api/v1/referees/${id}/matches`);
-    return res.data;
+    return httpGet<Match[]>(`/api/v1/referees/${id}/matches`);
   },
 };
 

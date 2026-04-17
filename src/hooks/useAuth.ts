@@ -4,6 +4,7 @@ import AuthService from '../services/auth.service';
 import type { AuthUser } from '../types';
 import { dashboardPath, normalizeRole } from '../utils/roles';
 import { flushPendingTeamCreate } from '../utils/pendingTeam';
+import { ApiError } from '../services/apiError';
 
 export function useAuth() {
   const navigate = useNavigate();
@@ -40,7 +41,11 @@ export function useAuth() {
         }
         navigate(dashboardPath(role));
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'Error al iniciar sesión');
+        if (e instanceof ApiError) {
+          setError(e.kind === 'NETWORK' ? `Error de red: ${e.message}` : e.message);
+        } else {
+          setError(e instanceof Error ? e.message : 'Error al iniciar sesión');
+        }
       } finally {
         setLoading(false);
       }

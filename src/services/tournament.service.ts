@@ -1,41 +1,30 @@
-import apiClient from './apiClient';
 import type { Tournament, StandingDTO } from '../types';
+import type { CreateTournamentRequestDTO } from '../types/api/tournament';
+import { httpGet, httpPost } from './http';
 
 const TournamentService = {
   getAll: async () => {
-    const res = await apiClient.get<Tournament[]>('/api/v1/tournaments');
-    return res.data;
+    return httpGet<Tournament[]>('/api/v1/tournaments');
   },
 
   getById: async (id: number) => {
-    const res = await apiClient.get<Tournament>(`/api/v1/tournaments/${id}`);
-    return res.data;
+    return httpGet<Tournament>(`/api/v1/tournaments/${id}`);
   },
 
   getStandings: async (id: number) => {
-    const res = await apiClient.get<StandingDTO[]>(`/api/v1/tournaments/${id}/standings`);
-    return res.data;
+    return httpGet<StandingDTO[]>(`/api/v1/tournaments/${id}/standings`);
   },
 
-  create: async (data: {
-    startDate: string;
-    endDate: string;
-    teamCost: number;
-    numberOfTeams: number;
-    rules: string;
-  }) => {
-    const res = await apiClient.post('/api/v1/tournaments', data);
-    return res.data;
+  create: async (data: CreateTournamentRequestDTO) => {
+    return httpPost<unknown, CreateTournamentRequestDTO>('/api/v1/tournaments', data);
   },
 
   start: async (id: number) => {
-    const res = await apiClient.post(`/api/v1/tournaments/${id}/start`);
-    return res.data;
+    return httpPost<unknown>(`/api/v1/tournaments/${id}/start`);
   },
 
   generateMatches: async (id: number) => {
-    const res = await apiClient.post(`/api/v1/tournaments/${id}/generate-matches`);
-    return res.data;
+    return httpPost<unknown>(`/api/v1/tournaments/${id}/generate-matches`);
   },
 };
 

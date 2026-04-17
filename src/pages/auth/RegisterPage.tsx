@@ -28,6 +28,7 @@ export default function RegisterPage() {
     gender: '',
     program: '',
   });
+  const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
 
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -79,6 +80,7 @@ export default function RegisterPage() {
       gender: form.gender,
       program: form.program,
       semester: 1,
+      profilePhoto: profilePhoto ?? undefined,
       birthDate: new Date(new Date().setFullYear(new Date().getFullYear() - Number(form.age)))
         .toISOString()
         .slice(0, 10),
@@ -118,6 +120,10 @@ export default function RegisterPage() {
             value={form.email}
             onChange={(e) => setField('email', e.target.value)}
           />
+          <label className="tc-register-photo-input">
+            <span>FOTO DE PERFIL (OPCIONAL)</span>
+            <input type="file" accept="image/*" onChange={(e) => setProfilePhoto(e.target.files?.[0] ?? null)} />
+          </label>
           <TextField
             label="CONTRASEÑA"
             type="password"

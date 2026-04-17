@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import PlayerService from '../services/player.service';
 import type { PlayerRegistrationRequest } from '../types';
+import { ApiError } from '../services/apiError';
 
 export function useRegister() {
   const [loading, setLoading] = useState(false);
@@ -16,7 +17,11 @@ export function useRegister() {
       setSuccess('Registro completado correctamente. Ahora puedes iniciar sesión.');
       return true;
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'No se pudo completar el registro');
+      if (e instanceof ApiError) {
+        setError(e.kind === 'NETWORK' ? `Error de red: ${e.message}` : e.message);
+      } else {
+        setError(e instanceof Error ? e.message : 'No se pudo completar el registro');
+      }
       return false;
     } finally {
       setLoading(false);
