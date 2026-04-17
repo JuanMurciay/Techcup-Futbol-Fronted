@@ -119,3 +119,28 @@ export interface RefereeUser {
   email: string;
   licenseNumber?: string;
 }
+
+export interface TeamSummary {
+  id: number;
+  name: string;
+  shieldUrl?: string;
+}
+
+export interface MatchSummary {
+  id: number;
+  status: string;
+  matchDate?: string;
+  field?: string;
+  homeGoals?: number;
+  awayGoals?: number;
+  homeTeam?: TeamSummary;
+  awayTeam?: TeamSummary;
+}
+
+export interface DashboardKPIs {
+  goals: number;
+  yellowCards: number;
+  redCards: number;
+  matchesPlayed: number;
+  assists: number;
+}
