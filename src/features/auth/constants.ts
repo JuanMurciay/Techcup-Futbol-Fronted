@@ -17,5 +17,8 @@ export const AUTH_IMAGE_ASSETS = {
   circuitTop: '/images/circuit-top.png',
   circuitBottom: '/images/circuit-bottom.png',
   techcupLogo: '/images/techcup-logo.png',
-  schoolShield: '/images/school-shield.png',
+  schoolShield: '/images/techcup-logo.png',
+  playerAvatar: '/images/player-avatar-placeholder.png',
+  jerseyFront: '/images/jersey-front.png',
+  jerseyBack: '/images/jersey-back.png',
 } as const;

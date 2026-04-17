@@ -4,6 +4,7 @@ import type { StandingDTO } from '../types';
 export interface PlayerStats {
   playerId: number;
   playerName: string;
+  matchesPlayed?: number;
   goals: number;
   yellowCards: number;
   redCards: number;
